@@ -71,9 +71,9 @@
                     resultElement.innerHTML = `<span style="color: red;">${data.error}</span>`;
                 } else {
                     resultElement.innerHTML = `
-                        <a href="tel:${data.Phone}" style="font-size: 18px; font-weight: bold;">${data.Phone}</a> <br>
-                        <a href="mailto:${data.Email}" style="font-size: 16px;">${data.Email}</a> <br>
-                        <span style="font-size: 16px;">${data.Address}</span>
+                        <strong>Phone:</strong> ${data.Phone} <br>
+                        <strong>Email:</strong> ${data.Email} <br>
+                        <strong>Address:</strong> ${data.Address}
                     `;
                 }
             } catch (error) {
