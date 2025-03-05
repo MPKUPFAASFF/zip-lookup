@@ -56,6 +56,21 @@
     overflow: hidden;
     word-wrap: break-word; /* Prevents long text from breaking the layout */
 }
+        Add responsiveness for mobile screens */
+        @media (max-width: 768px) {
+            .zip-lookup-container {
+                width: 95%; /* Use more screen width on mobile */
+                padding: 15px; /* Reduce padding for mobile */
+            }
+
+            input, button {
+                width: 100%;  /* Full-width input and button on smaller screens */
+            }
+
+            #result {
+                font-size: 16px; /* Adjust font size for smaller screens */
+            }
+        }
     </style>
 </head>
 <body>
