@@ -6,20 +6,20 @@
     <title>ZIP Code Lookup</title>
     <style>
         .zip-lookup-container {
-    width: 80%;
-    margin: 0 auto;
-    padding: 20px;
-    background: #f8f8f8;
-    border-radius: 5px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: auto;  /* Allow the container to grow as needed */
-    min-height: 320px; /* Ensure there's enough height for mobile screens */
-    overflow: hidden; /* Prevent content overflow */
-}
+            width: 80%;  /* 80% width for larger screens */
+            margin: 0 auto;
+            padding: 20px;
+            background: #f8f8f8;
+            border-radius: 5px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: auto;  /* Allow height to grow automatically */
+            min-height: 320px; /* Ensures enough height for content */
+            overflow: hidden;
+        }
 
         input {
             width: 80%;
@@ -49,26 +49,30 @@
         }
 
         #result {
-    font-size: 18px;
-    font-weight: bold;
-    margin-top: 10px;
-    min-height: 10px; /* Ensure there's enough space for the result */
-    overflow: hidden;
-    word-wrap: break-word; /* Prevents long text from breaking the layout */
-}
-        Add responsiveness for mobile screens */
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+            min-height: 80px;  /* Adjust space for results */
+            overflow: hidden;
+            word-wrap: break-word;
+        }
+
+        /* Add responsiveness for mobile screens */
         @media (max-width: 768px) {
             .zip-lookup-container {
-                width: 95%; /* Use more screen width on mobile */
-                padding: 10px; /* Reduce padding for mobile */
+                width: 95%;  /* Make the container wider on mobile */
+                padding: 10px;  /* Reduce padding on mobile */
+                min-height: 350px; /* Make sure there is enough room on mobile */
             }
 
             input, button {
-                width: 100%;  /* Full-width input and button on smaller screens */
+                width: 100%;  /* Full-width inputs and button */
             }
 
             #result {
-                font-size: 16px; /* Adjust font size for smaller screens */
+                font-size: 16px;  /* Smaller font size for mobile */
+                min-height: 60px;  /* Adjust result section height on mobile */
+                margin-top: 15px;  /* Adjust margin for result spacing */
             }
         }
     </style>
