@@ -6,19 +6,20 @@
     <title>ZIP Code Lookup</title>
     <style>
         .zip-lookup-container {
-            width: 80%;
-            margin: 0 auto;
-            padding: 20px;
-            background: #f8f8f8;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            height: 320px;  /* Set a fixed height for the form container */
-            overflow: hidden;  /* Prevent resizing */
-        }
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+    background: #f8f8f8;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: auto;  /* Allow the container to grow as needed */
+    min-height: 320px; /* Ensure there's enough height for mobile screens */
+    overflow: hidden; /* Prevent content overflow */
+}
 
         input {
             width: 80%;
@@ -48,12 +49,13 @@
         }
 
         #result {
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 20px;
-            overflow: hidden;
-            min-height: 100px; /* Ensures there's space for the result */
-        }
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 20px;
+    min-height: 100px; /* Ensure there's enough space for the result */
+    overflow: hidden;
+    word-wrap: break-word; /* Prevents long text from breaking the layout */
+}
     </style>
 </head>
 <body>
