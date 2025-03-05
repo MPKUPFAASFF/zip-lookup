@@ -64,7 +64,7 @@
 
             try {
                 // Replace YOUR_SCRIPT_ID with your actual Google Apps Script ID
-                const response = await fetch("https://script.google.com/macros/s/AKfycbxbMuJzsHnbg1_rICZiSLyMdhcL49bhrw4wX2J2J7Kmd2zN0iSD0gOVd4DXJDOq4SKMoA/exec?zip=" + zip);
+                const response = await fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec?zip=" + zip);
                 const data = await response.json();
 
                 if (data.error) {
