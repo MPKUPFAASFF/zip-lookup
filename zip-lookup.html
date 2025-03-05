@@ -6,55 +6,60 @@
     <title>ZIP Code Lookup</title>
     <style>
         .zip-lookup-container {
-    width: 80%; /* Make the form wider */
-    margin: 0 auto;
-    padding: 20px;
-    background: #f8f8f8;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 320px;  /* Set a fixed height for the form container */
-    overflow: hidden;  /* Hide any extra content that doesn't fit */
-}
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f8f8f8;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 320px;  /* Set a fixed height for the form container */
+            overflow: hidden;  /* Prevent resizing */
+        }
+
         input {
-    width: 80%;
-    padding: 15px;
-    margin-top: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #fff;
-    margin-bottom: 20px;
-}
-       button {
-    padding: 12px 20px;
-    font-size: 18px;
-    background-color: #c20430;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    width: 90%;  /* Full width button */
-    margin-bottom: 20px;
-}
+            width: 80%;
+            padding: 15px;
+            margin-top: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 18px;
+            background-color: #c20430;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 90%;
+            margin-bottom: 20px;
+        }
+
         button:hover {
             background-color: #a10227;
         }
+
         #result {
-    font-size: 18px;
-    font-weight: bold;
-    margin-top: 20px;
-    overflow: hidden; /* Make sure it doesn't overflow the form container */
-}
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+            overflow: hidden;
+            min-height: 100px; /* Ensures there's space for the result */
+        }
     </style>
 </head>
 <body>
 
     <div class="zip-lookup-container">
-        <h2>Find Your Nearest Spray Foam Branch</h2>
+        <h2>Find Your Nearest Branch</h2>
         <input type="text" id="zipcode" placeholder="Enter ZIP Code">
         <button type="button" onclick="findNearestPhone()">Find Your SPI Contact</button>
         <p id="result"></p>
@@ -71,18 +76,17 @@
             }
 
             try {
-                // Replace YOUR_SCRIPT_ID with your actual Google Apps Script Web App URL
                 const response = await fetch("https://script.google.com/macros/s/AKfycbyvuilEUCpSS_4RC3sd_MvS4YxOiIRME5rWfHogFYaTotC1_sjlED5CMg7bUrp2c5gbEg/exec?zip=" + zip);
                 const data = await response.json();
 
                 if (data.error) {
                     resultElement.innerHTML = `<span style="color: red;">${data.error}</span>`;
                 } else {
-                   resultElement.innerHTML = `
-    <a href="tel:${data.Phone}" style="font-size: 18px; font-weight: bold;">${data.Phone}</a> <br>
-    <a href="mailto:${data.Email}" style="font-size: 16px;">${data.Email}</a> <br>
-    <span style="font-size: 16px;">${data.Address}</span>
-`;
+                    resultElement.innerHTML = `
+                        <a href="tel:${data.Phone}" style="font-size: 18px; font-weight: bold;">${data.Phone}</a> <br>
+                        <a href="mailto:${data.Email}" style="font-size: 16px;">${data.Email}</a> <br>
+                        <span style="font-size: 16px;">${data.Address}</span>
+                    `;
                 }
             } catch (error) {
                 console.error("Fetch error:", error);
