@@ -72,15 +72,16 @@
         #result {
             font-size: 16px;
             font-weight: 500;
-            padding: 10px;
+            padding: 12px;
             border-radius: 5px;
             background: #f1f1f1;
-            min-height: 50px;
             display: flex;
+            flex-direction: column; /* Ensures all details are vertically stacked */
             align-items: center;
-            justify-content: center;
             text-align: center;
             word-wrap: break-word;
+            min-height: 100px; /* Increased height to prevent "squishing" */
+            gap: 8px; /* Adds spacing between elements */
         }
 
         a {
@@ -115,7 +116,8 @@
             }
             #result {
                 font-size: 14px;
-                padding: 8px;
+                padding: 10px;
+                gap: 6px;
             }
         }
     </style>
@@ -126,7 +128,7 @@
         <h2>Find My Local SPI MI Branch</h2>
         <input type="text" id="zipcode" placeholder="Enter ZIP Code">
         <button type="button" onclick="findNearestBranch()">Show Closest Branch</button>
-        <p id="result">Enter your ZIP code above.</p>
+        <div id="result">Enter your ZIP code above.</div>
     </div>
 
     <script>
@@ -169,9 +171,12 @@
                     resultElement.innerHTML = `<span style="color: red;">${data.error}</span>`;
                 } else {
                     resultElement.innerHTML = `
-                        <strong>${data.Branch}</strong><br>
-                        <a href="tel:${data.Phone}" style="font-size: 16px;">${data.Phone}</a><br>
-                        <a href="mailto:${data.Email}" style="font-size: 14px;">${data.Email}</a><br>
+                        <strong style="font-size: 18px;">${data.Branch}</strong>
+                        <br>
+                        <a href="tel:${data.Phone}" style="font-size: 16px;">${data.Phone}</a>
+                        <br>
+                        <a href="mailto:${data.Email}" style="font-size: 14px;">${data.Email}</a>
+                        <br>
                         <span style="font-size: 14px;">${data.Address}</span>
                     `;
                 }
