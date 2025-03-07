@@ -129,7 +129,7 @@
                 console.log(`✅ ZIP: ${zip}, Lat: ${userLat}, Lon: ${userLon}`);
 
                 // 🔹 Step 2: Fetch nearest branch from Google Apps Script
-                const scriptUrl = "https://script.google.com/macros/s/YOUR_NEW_DEPLOYMENT_ID/exec";  // Change this to the new script URL
+                const scriptUrl = "https://script.google.com/macros/s/AKfycbz3Wj3_oc7VyrY5pfy1PsPIv3644-feQgmfQUxvd48I6-lUfKmz14slF0yKA_gJnUyXeA/exec";  // Change this to the new script URL
                 const apiUrl = `${scriptUrl}?lat=${encodeURIComponent(userLat)}&lon=${encodeURIComponent(userLon)}`;
                 
                 console.log(`🔄 Requesting: ${apiUrl}`);
