@@ -98,7 +98,21 @@
             }
 
             try {
-                const response = await fetch("https://script.google.com/macros/s/AKfycby0gmgN2e7d9nmhDKUNfaSZ5sXByFya1pby_KVRp4Q15s916H2MuIZWZo5MV7YjSYTEUw/exec?zip=" + zip);
+                // Get latitude & longitude for user-entered ZIP code
+                const locationResponse = await fetch(`http://api.zippopotam.us/us/${zip}`);
+                const locationData = await locationResponse.json();
+
+                if (!locationData.places) {
+                    resultElement.innerHTML = "<span style='color: red;'>Invalid ZIP code.</span>";
+                    return;
+                }
+
+                const userLat = parseFloat(locationData.places[0].latitude);
+                const userLon = parseFloat(locationData.places[0].longitude);
+
+                // Fetch nearest branch using Google Apps Script
+                const apiUrl = `https://script.google.com/macros/s/AKfycby0gmgN2e7d9nmhDKUNfaSZ5sXByFya1pby_KVRp4Q15s916H2MuIZWZo5MV7YjSYTEUw/exec?lat=${userLat}&lon=${userLon}`;
+                const response = await fetch(apiUrl);
                 const data = await response.json();
 
                 if (data.error) {
@@ -106,9 +120,9 @@
                 } else {
                     resultElement.innerHTML = `
                         <strong>${data.Branch}</strong><br>
-                        <a href="tel:${data.Phone}<br>
-                        <a href="mailto:${data.Email}<br>
-                        <span style=>${data.Address}</span>
+                        <a href="tel:${data.Phone}${data.Phone}</a><br>
+                        <a href="mailto:${data.Email}${data.Email}</a><br>
+                        <span style=${data.Address}</span>
                     `;
                 }
             } catch (error) {
