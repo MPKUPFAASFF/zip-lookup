@@ -4,44 +4,65 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZIP Code Lookup</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        .zip-lookup-container {
-            width: 80%;  /* 80% width for larger screens */
-            margin: 0 auto;
+        * {
+            font-family: 'Roboto', sans-serif;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f8f8f8;
             padding: 20px;
-            background: #f8f8f8;
-            border-radius: 5px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .zip-lookup-container {
+            width: 100%;
+            max-width: 400px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
             text-align: center;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            height: auto;  /* Allow height to grow automatically */
-            min-height: 320px; /* Ensures enough height for content */
-            overflow: hidden;
+            gap: 12px;
+        }
+
+        h2 {
+            font-weight: 700;
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #333;
         }
 
         input {
-            width: 80%;
-            padding: 15px;
-            margin-top: 10px;
+            width: 100%;
+            padding: 12px;
             font-size: 16px;
             border: 1px solid #ccc;
             border-radius: 5px;
             background-color: #fff;
-            margin-bottom: 20px;
+            text-align: center;
         }
 
         button {
-            padding: 12px 20px;
-            font-size: 18px;
+            font-weight: 700;
+            padding: 12px;
+            font-size: 16px;
             background-color: #c20430;
             color: white;
             border: none;
             cursor: pointer;
             border-radius: 5px;
-            width: 90%;
-            margin-bottom: 20px;
+            width: 100%;
+            transition: background 0.2s ease-in-out;
         }
 
         button:hover {
@@ -49,53 +70,41 @@
         }
 
         #result {
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 10px;
-            min-height: 80px;  /* Adjust space for results */
-            overflow: hidden;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 10px;
+            border-radius: 5px;
+            background: #f1f1f1;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
             word-wrap: break-word;
         }
 
-        /* Add responsiveness for mobile screens */
-        @media (max-width: 768px) {
-            .zip-lookup-container {
-                width: 95%;  /* Make the container wider on mobile */
-                padding: 10px;  /* Reduce padding on mobile */
-                min-height: 350px; /* Make sure there is enough room on mobile */
-            }
+        a {
+            color: #c20430;
+            text-decoration: none;
+            font-weight: 700;
+        }
 
-            input {
-                width: 90%;  /* Limit the width of the input to 90% on mobile */
-                margin-left: 5%;  /* Add margin to the left */
-                margin-right: 5%;  /* Add margin to the right */
-            }
-
-            button {
-                width: 90%;  /* Make button fit within the 90% width */
-                margin-left: 5%;  /* Add margin to the left */
-                margin-right: 5%;  /* Add margin to the right */
-            }
-
-            #result {
-                font-size: 16px;  /* Smaller font size for mobile */
-                min-height: 60px;  /* Adjust result section height on mobile */
-                margin-top: 15px;  /* Adjust margin for result spacing */
-            }
+        a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
 
     <div class="zip-lookup-container">
-        <h2>Find Your Nearest Branch</h2>
+        <h2>Find My Local SPI MI Branch</h2>
         <input type="text" id="zipcode" placeholder="Enter ZIP Code">
-        <button type="button" onclick="findNearestPhone()">Find Your SPI Contact</button>
-        <p id="result"></p>
+        <button type="button" onclick="findNearestBranch()">Get Branch Info</button>
+        <p id="result">Enter your ZIP code above.</p>
     </div>
 
     <script>
-        async function findNearestPhone() {
+        async function findNearestBranch() {
             const zip = document.getElementById("zipcode").value.trim();
             const resultElement = document.getElementById("result");
 
@@ -105,20 +114,43 @@
             }
 
             try {
-                const response = await fetch("https://script.google.com/macros/s/AKfycbyvuilEUCpSS_4RC3sd_MvS4YxOiIRME5rWfHogFYaTotC1_sjlED5CMg7bUrp2c5gbEg/exec?zip=" + zip);
+                // 🔹 Step 1: Convert ZIP Code to Latitude & Longitude
+                const geoResponse = await fetch(`https://nominatim.openstreetmap.org/search?format=json&postalcode=${zip}&country=US`);
+                const geoData = await geoResponse.json();
+
+                if (!geoData || geoData.length === 0) {
+                    resultElement.innerHTML = "<span style='color: red;'>Invalid ZIP code. Try again.</span>";
+                    return;
+                }
+
+                const userLat = parseFloat(geoData[0].lat);
+                const userLon = parseFloat(geoData[0].lon);
+
+                console.log(`✅ ZIP: ${zip}, Lat: ${userLat}, Lon: ${userLon}`);
+
+                // 🔹 Step 2: Fetch nearest branch from Google Apps Script
+                const scriptUrl = "https://script.google.com/macros/s/YOUR_NEW_DEPLOYMENT_ID/exec";  // Change this to the new script URL
+                const apiUrl = `${scriptUrl}?lat=${encodeURIComponent(userLat)}&lon=${encodeURIComponent(userLon)}`;
+                
+                console.log(`🔄 Requesting: ${apiUrl}`);
+
+                const response = await fetch(apiUrl);
                 const data = await response.json();
+
+                console.log(`📩 Response from server:`, data);
 
                 if (data.error) {
                     resultElement.innerHTML = `<span style="color: red;">${data.error}</span>`;
                 } else {
                     resultElement.innerHTML = `
-                        <a href="tel:${data.Phone}" style="font-size: 18px; font-weight: bold;">${data.Phone}</a> <br>
-                        <a href="mailto:${data.Email}" style="font-size: 16px;">${data.Email}</a> <br>
-                        <span style="font-size: 16px;">${data.Address}</span>
+                        <strong>${data.Branch}</strong><br>
+                        <a href="tel:${data.Phone}" style="font-size: 16px;">${data.Phone}</a><br>
+                        <a href="mailto:${data.Email}" style="font-size: 14px;">${data.Email}</a><br>
+                        <span style="font-size: 14px;">${data.Address}</span>
                     `;
                 }
             } catch (error) {
-                console.error("Fetch error:", error);
+                console.error("❌ Fetch error:", error);
                 resultElement.innerHTML = "<span style='color: red;'>Error fetching data. Try again later.</span>";
             }
         }
