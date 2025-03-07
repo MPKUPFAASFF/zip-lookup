@@ -4,44 +4,65 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZIP Code Lookup</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        .zip-lookup-container {
-            width: 80%;
-            margin: 0 auto;
+        * {
+            font-family: 'Roboto', sans-serif;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f8f8f8;
             padding: 20px;
-            background: #f8f8f8;
-            border-radius: 5px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .zip-lookup-container {
+            width: 100%;
+            max-width: 380px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
             text-align: center;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            height: auto;
-            min-height: 320px;
-            overflow: hidden;
+            gap: 12px;
+        }
+
+        h2 {
+            font-weight: 700;
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #333;
         }
 
         input {
-            width: 80%;
-            padding: 15px;
-            margin-top: 10px;
+            width: 100%;
+            padding: 12px;
             font-size: 16px;
             border: 1px solid #ccc;
             border-radius: 5px;
             background-color: #fff;
-            margin-bottom: 20px;
+            text-align: center;
         }
 
         button {
-            padding: 12px 20px;
-            font-size: 18px;
+            font-weight: 700;
+            padding: 12px;
+            font-size: 16px;
             background-color: #c20430;
             color: white;
             border: none;
             cursor: pointer;
             border-radius: 5px;
-            width: 90%;
-            margin-bottom: 20px;
+            width: 100%;
+            transition: background 0.2s ease-in-out;
         }
 
         button:hover {
@@ -49,31 +70,52 @@
         }
 
         #result {
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 10px;
-            min-height: 80px;
-            overflow: hidden;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 10px;
+            border-radius: 5px;
+            background: #f1f1f1;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
             word-wrap: break-word;
         }
 
+        a {
+            color: #c20430;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
             .zip-lookup-container {
                 width: 95%;
+                padding: 15px;
+            }
+            h2 {
+                font-size: 18px;
+            }
+            input {
+                font-size: 14px;
                 padding: 10px;
-                min-height: 350px;
             }
-
-            input, button {
-                width: 90%;
-                margin-left: 5%;
-                margin-right: 5%;
+            button {
+                font-size: 14px;
+                padding: 10px;
             }
-
             #result {
-                font-size: 16px;
-                min-height: 60px;
-                margin-top: 15px;
+                font-size: 14px;
+                padding: 8px;
             }
         }
     </style>
@@ -81,63 +123,63 @@
 <body>
 
     <div class="zip-lookup-container">
-        <h2>Find Your Nearest SPI Branch</h2>
+        <h2>Find My Local SPI MI Branch</h2>
         <input type="text" id="zipcode" placeholder="Enter ZIP Code">
-        <button type="button" onclick="findNearestBranch()">Find Your SPI Contact</button>
-        <p id="result"></p>
+        <button type="button" onclick="findNearestBranch()">Show Closest Branch</button>
+        <p id="result">Enter your ZIP code above.</p>
     </div>
 
     <script>
        async function findNearestBranch() {
-    const zip = document.getElementById("zipcode").value.trim();
-    const resultElement = document.getElementById("result");
+            const zip = document.getElementById("zipcode").value.trim();
+            const resultElement = document.getElementById("result");
 
-    if (!zip) {
-        resultElement.innerHTML = "<span style='color: red;'>Please enter a ZIP code.</span>";
-        return;
-    }
+            if (!zip) {
+                resultElement.innerHTML = "<span style='color: red;'>Please enter a ZIP code.</span>";
+                return;
+            }
 
-    try {
-        // 🔹 Step 1: Convert ZIP Code to Latitude & Longitude
-        const geoResponse = await fetch(`https://nominatim.openstreetmap.org/search?format=json&postalcode=${zip}&country=US`);
-        const geoData = await geoResponse.json();
+            try {
+                // 🔹 Step 1: Convert ZIP Code to Latitude & Longitude
+                const geoResponse = await fetch(`https://nominatim.openstreetmap.org/search?format=json&postalcode=${zip}&country=US`);
+                const geoData = await geoResponse.json();
 
-        if (!geoData || geoData.length === 0) {
-            resultElement.innerHTML = "<span style='color: red;'>Invalid ZIP code. Try again.</span>";
-            return;
+                if (!geoData || geoData.length === 0) {
+                    resultElement.innerHTML = "<span style='color: red;'>Invalid ZIP code. Try again.</span>";
+                    return;
+                }
+
+                const userLat = parseFloat(geoData[0].lat);
+                const userLon = parseFloat(geoData[0].lon);
+
+                console.log(`✅ ZIP: ${zip}, Lat: ${userLat}, Lon: ${userLon}`);
+
+                // 🔹 Step 2: Fetch nearest branch from Google Apps Script
+                const scriptUrl = "https://script.google.com/macros/s/AKfycbx4_rN5iqvWHY5QZP8TVbQja-IlxQ05MNxDU-xa8MTh-9_wKFAs0TU5eV0FtOG68X4NXg/exec"; 
+                const apiUrl = `${scriptUrl}?lat=${encodeURIComponent(userLat)}&lon=${encodeURIComponent(userLon)}`;
+                
+                console.log(`🔄 Requesting: ${apiUrl}`);
+
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                console.log(`📩 Response from server:`, data);
+
+                if (data.error) {
+                    resultElement.innerHTML = `<span style="color: red;">${data.error}</span>`;
+                } else {
+                    resultElement.innerHTML = `
+                        <strong>${data.Branch}</strong><br>
+                        <a href="tel:${data.Phone}" style="font-size: 16px;">${data.Phone}</a><br>
+                        <a href="mailto:${data.Email}" style="font-size: 14px;">${data.Email}</a><br>
+                        <span style="font-size: 14px;">${data.Address}</span>
+                    `;
+                }
+            } catch (error) {
+                console.error("❌ Fetch error:", error);
+                resultElement.innerHTML = "<span style='color: red;'>Error fetching data. Try again later.</span>";
+            }
         }
-
-        const userLat = parseFloat(geoData[0].lat);
-        const userLon = parseFloat(geoData[0].lon);
-
-        console.log(`✅ ZIP: ${zip}, Lat: ${userLat}, Lon: ${userLon}`); // Debugging log
-
-        // 🔹 Step 2: Fetch nearest branch from Google Apps Script
-        const scriptUrl = "https://script.google.com/macros/s/AKfycbyykT4AzVZFE9zjBv4o7qZbkSqJ2vaXPfMZWx0R96G4It9bf292k4ABtHqmD6z0qcZiMw/exec"; 
-        const apiUrl = `${scriptUrl}?lat=${userLat}&lon=${userLon}`;
-        
-        console.log(`🔄 Requesting: ${apiUrl}`); // Debugging log
-
-        const response = await fetch(apiUrl);
-        const data = await response.json();
-
-        console.log(`📩 Response from server:`, data); // Debugging log
-
-        if (data.error) {
-            resultElement.innerHTML = `<span style="color: red;">${data.error}</span>`;
-        } else {
-            resultElement.innerHTML = `
-                <strong>${data.Branch}</strong><br>
-                <a href="tel:${data.Phone}" style="font-size: 18px; font-weight: bold;">${data.Phone}</a><br>
-                <a href="mailto:${data.Email}" style="font-size: 16px;">${data.Email}</a><br>
-                <span style="font-size: 16px;">${data.Address}</span>
-            `;
-        }
-    } catch (error) {
-        console.error("❌ Fetch error:", error);
-        resultElement.innerHTML = "<span style='color: red;'>Error fetching data. Try again later.</span>";
-    }
-}
     </script>
 
 </body>
