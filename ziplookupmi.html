@@ -98,20 +98,21 @@
             }
 
             try {
-                // Get latitude & longitude for user-entered ZIP code
+                // Step 1: Get Latitude & Longitude for ZIP Code
                 const locationResponse = await fetch(`http://api.zippopotam.us/us/${zip}`);
                 const locationData = await locationResponse.json();
 
-                if (!locationData.places) {
-                    resultElement.innerHTML = "<span style='color: red;'>Invalid ZIP code.</span>";
+                if (!locationData.places || locationData.places.length === 0) {
+                    resultElement.innerHTML = "<span style='color: red;'>Invalid ZIP code. Try again.</span>";
                     return;
                 }
 
                 const userLat = parseFloat(locationData.places[0].latitude);
                 const userLon = parseFloat(locationData.places[0].longitude);
 
-                // Fetch nearest branch using Google Apps Script
-                const apiUrl = `https://script.google.com/macros/s/AKfycby0gmgN2e7d9nmhDKUNfaSZ5sXByFya1pby_KVRp4Q15s916H2MuIZWZo5MV7YjSYTEUw/exec?lat=${userLat}&lon=${userLon}`;
+                // Step 2: Fetch nearest branch using Google Apps Script
+                const scriptUrl = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec"; 
+                const apiUrl = `${scriptUrl}?lat=${userLat}&lon=${userLon}`;
                 const response = await fetch(apiUrl);
                 const data = await response.json();
 
@@ -120,9 +121,9 @@
                 } else {
                     resultElement.innerHTML = `
                         <strong>${data.Branch}</strong><br>
-                        <a href="tel:${data.Phone}${data.Phone}</a><br>
-                        <a href="mailto:${data.Email}${data.Email}</a><br>
-                        <span style=${data.Address}</span>
+                        <a href="tel:${data.Phone}" style="font-size: 18px; font-weight: bold;">${data.Phone}</a><br>
+                        <a href="mailto:${data.Email}" style="font-size: 16px;">${data.Email}</a><br>
+                        <span style="font-size: 16px;">${data.Address}</span>
                     `;
                 }
             } catch (error) {
