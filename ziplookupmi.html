@@ -88,7 +88,7 @@
     </div>
 
     <script>
-        async function findNearestBranch() {
+       async function findNearestBranch() {
     const zip = document.getElementById("zipcode").value.trim();
     const resultElement = document.getElementById("result");
 
@@ -98,7 +98,7 @@
     }
 
     try {
-        // Step 1: Convert ZIP Code to Latitude & Longitude (Use OpenStreetMap API)
+        // Step 1: Convert ZIP Code to Latitude & Longitude (Using OpenStreetMap API)
         const geoResponse = await fetch(`https://nominatim.openstreetmap.org/search?format=json&postalcode=${zip}&country=US`);
         const geoData = await geoResponse.json();
 
@@ -110,9 +110,13 @@
         const userLat = parseFloat(geoData[0].lat);
         const userLon = parseFloat(geoData[0].lon);
 
-        // Step 2: Fetch nearest branch from Google Apps Script
-        const scriptUrl = "https://script.google.com/macros/s/AKfycby0gmgN2e7d9nmhDKUNfaSZ5sXByFya1pby_KVRp4Q15s916H2MuIZWZo5MV7YjSYTEUw/exec"; 
+        console.log(`ZIP: ${zip}, Lat: ${userLat}, Lon: ${userLon}`); // Debugging log
+
+        // Step 2: Fetch nearest branch using Google Apps Script
+        const scriptUrl = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec"; 
         const apiUrl = `${scriptUrl}?lat=${userLat}&lon=${userLon}`;
+        console.log(`Requesting: ${apiUrl}`); // Debugging log
+
         const response = await fetch(apiUrl);
         const data = await response.json();
 
