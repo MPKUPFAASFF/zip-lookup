@@ -89,48 +89,48 @@
 
     <script>
         async function findNearestBranch() {
-            const zip = document.getElementById("zipcode").value.trim();
-            const resultElement = document.getElementById("result");
+    const zip = document.getElementById("zipcode").value.trim();
+    const resultElement = document.getElementById("result");
 
-            if (!zip) {
-                resultElement.innerHTML = "<span style='color: red;'>Please enter a ZIP code.</span>";
-                return;
-            }
+    if (!zip) {
+        resultElement.innerHTML = "<span style='color: red;'>Please enter a ZIP code.</span>";
+        return;
+    }
 
-            try {
-                // Step 1: Get Latitude & Longitude for ZIP Code
-                const locationResponse = await fetch(`http://api.zippopotam.us/us/${zip}`);
-                const locationData = await locationResponse.json();
+    try {
+        // Step 1: Get Latitude & Longitude for ZIP Code (Use OpenStreetMap API)
+        const geoResponse = await fetch(`https://nominatim.openstreetmap.org/search?format=json&postalcode=${zip}&country=US`);
+        const geoData = await geoResponse.json();
 
-                if (!locationData.places || locationData.places.length === 0) {
-                    resultElement.innerHTML = "<span style='color: red;'>Invalid ZIP code. Try again.</span>";
-                    return;
-                }
-
-                const userLat = parseFloat(locationData.places[0].latitude);
-                const userLon = parseFloat(locationData.places[0].longitude);
-
-                // Step 2: Fetch nearest branch using Google Apps Script
-                const scriptUrl = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec"; 
-                const apiUrl = `${scriptUrl}?lat=${userLat}&lon=${userLon}`;
-                const response = await fetch(apiUrl);
-                const data = await response.json();
-
-                if (data.error) {
-                    resultElement.innerHTML = `<span style="color: red;">${data.error}</span>`;
-                } else {
-                    resultElement.innerHTML = `
-                        <strong>${data.Branch}</strong><br>
-                        <a href="tel:${data.Phone}" style="font-size: 18px; font-weight: bold;">${data.Phone}</a><br>
-                        <a href="mailto:${data.Email}" style="font-size: 16px;">${data.Email}</a><br>
-                        <span style="font-size: 16px;">${data.Address}</span>
-                    `;
-                }
-            } catch (error) {
-                console.error("Fetch error:", error);
-                resultElement.innerHTML = "<span style='color: red;'>Error fetching data. Try again later.</span>";
-            }
+        if (!geoData || geoData.length === 0) {
+            resultElement.innerHTML = "<span style='color: red;'>Invalid ZIP code. Try again.</span>";
+            return;
         }
+
+        const userLat = parseFloat(geoData[0].lat);
+        const userLon = parseFloat(geoData[0].lon);
+
+        // Step 2: Fetch nearest branch using Google Apps Script
+        const scriptUrl = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec"; 
+        const apiUrl = `${scriptUrl}?lat=${userLat}&lon=${userLon}`;
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+
+        if (data.error) {
+            resultElement.innerHTML = `<span style="color: red;">${data.error}</span>`;
+        } else {
+            resultElement.innerHTML = `
+                <strong>${data.Branch}</strong><br>
+                <a href="tel:${data.Phone}" style="font-size: 18px; font-weight: bold;">${data.Phone}</a><br>
+                <a href="mailto:${data.Email}" style="font-size: 16px;">${data.Email}</a><br>
+                <span style="font-size: 16px;">${data.Address}</span>
+            `;
+        }
+    } catch (error) {
+        console.error("Fetch error:", error);
+        resultElement.innerHTML = "<span style='color: red;'>Error fetching data. Try again later.</span>";
+    }
+}
     </script>
 
 </body>
