@@ -91,12 +91,31 @@
         a:hover {
             text-decoration: underline;
         }
+
+        @media (max-width: 768px) {
+            .zip-lookup-container {
+                width: 95%;
+                padding: 10px;
+            }
+
+            input, button {
+                width: 90%;
+                margin-left: 5%;
+                margin-right: 5%;
+            }
+
+            #result {
+                font-size: 16px;
+                min-height: 60px;
+                margin-top: 15px;
+            }
+        }
     </style>
 </head>
 <body>
 
     <div class="zip-lookup-container">
-        <h2>Find My Local SPI MI Branch</h2>
+        <h2>Find My Local SPI SPF Branch</h2>
         <input type="text" id="zipcode" placeholder="Enter ZIP Code">
         <button type="button" onclick="findNearestBranch()">Get Branch Info</button>
         <p id="result">Enter your ZIP code above.</p>
